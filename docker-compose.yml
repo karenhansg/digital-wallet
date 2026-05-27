@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_URL=jdbc:postgresql://postgres:5432/wallet_db
+      - DB_USERNAME=wallet_user
+      - DB_PASSWORD=wallet_pass
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=dGhpcyBpcyBhIHNhbXBsZSBzZWNyZXQga2V5IGZvciBkZXZlbG9wbWVudA==
+      - DAILY_DEPOSIT_LIMIT=10000.00
+      - DAILY_WITHDRAWAL_LIMIT=5000.00
+      - WEEKLY_DEPOSIT_LIMIT=50000.00
+      - WEEKLY_WITHDRAWAL_LIMIT=25000.00
+      - MAX_BALANCE=100000.00
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: wallet_db
+      POSTGRES_USER: wallet_user
+      POSTGRES_PASSWORD: wallet_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wallet_user -d wallet_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:
