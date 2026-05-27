@@ -23,8 +23,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
     @Query("SELECT t FROM Transaction t WHERE t.walletId = :walletId " +
            "AND (:type IS NULL OR t.type = :type) " +
            "AND (:status IS NULL OR t.status = :status) " +
-           "AND (:from IS NULL OR t.createdAt >= :from) " +
-           "AND (:to IS NULL OR t.createdAt <= :to) " +
+           "AND (CAST(:from AS timestamp) IS NULL OR t.createdAt >= :from) " +
+           "AND (CAST(:to AS timestamp) IS NULL OR t.createdAt <= :to) " +
            "ORDER BY t.createdAt DESC")
     Page<Transaction> findByFilters(
             @Param("walletId") UUID walletId,
