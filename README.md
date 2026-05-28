@@ -77,7 +77,7 @@ mvn test
 
 ## API Documentation
 
-Once running, access Swagger UI at: `http://localhost:8080/swagger-ui.html`
+Once running, access Swagger UI at: `http://localhost:8080/swagger-ui/index.html`
 
 ### Key Endpoints
 
